@@ -12,26 +12,40 @@ int merge(li nums[], li aux_arr[], int start, int end, int pivot){
 
     int i = 0;
     int f = start;
-    int s = pivot +1;
+    int s = pivot;
 
     while (f < pivot && s < end) {
 
         if (nums[f] < nums[s]) {   
             aux_arr[i] = nums[f];
-            f++;
+            f++; i++;
+
             }
         else {
             aux_arr[i] = nums[s];
-            s++;
+            s++; i++;
+
         }
+        
     }
 
+    puts("NUMS before");
+    printarray(&nums[start], sizeof(li), end-start + 1, "%ld-");
+
+    puts("\naux before");
+    printarray(aux_arr, sizeof(li), i, "%ld-");
     if (f == pivot) {
-        //memcpy(aux_arr + i * sizeof(li), nums + (s) * sizeof(li), sizeof(li) * (end - s) );
-        memcpy(&aux_arr[i], &nums[s], sizeof(li) * (end - s) );
+        // here we must add 1 because array[end] is also part of the array, 
+        // so we must copy it too
+        memcpy(&aux_arr[i], &nums[s], sizeof(li) * (end - s + 1) );
     }
+    else {
+        memcpy(&aux_arr[i], &nums[f], sizeof(f) * (pivot - f) );
+    }
+    puts("\nafter:  ");
+    printarray(aux_arr, sizeof(li), i + 1 + end - s, "%ld-");
 
-    memcpy(nums, aux_arr, sizeof(li) * (end - start));
+    memcpy(&nums[start], aux_arr, sizeof(li) * (end - start));
 
 }
 
