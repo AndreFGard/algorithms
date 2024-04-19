@@ -14,7 +14,9 @@ int merge(li nums[], li aux_arr[], int start, int end, int pivot){
     int f = start;
     int s = pivot;
 
-    while (f < pivot && s < end) {
+    //smaller equal  because arr[end] is part of the array
+    //it's important not to mix the length of the array with it`s last index
+    while (f < pivot && s <= end) {
 
         if (nums[f] < nums[s]) {   
             aux_arr[i] = nums[f];
