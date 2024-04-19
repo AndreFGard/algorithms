@@ -1,22 +1,61 @@
 #include <stdio.h>
 #include "../library.c"
+#include <string.h>
 
 typedef long int li;
 
-int mergesort(li nums[], int start, int end) {
+int merge(li nums[], li aux_arr[], int start, int end, int pivot){
+
+    li holder;
+
+    //first half and second half
+
+    int i = 0;
+    int f = start;
+    int s = pivot +1;
+
+    while (f < pivot && s < end) {
+
+        if (nums[f] < nums[s]) {   
+            aux_arr[i] = nums[f];
+            f++;
+            }
+        else {
+            aux_arr[i] = nums[s];
+            s++;
+        }
+    }
+
+    if (f == pivot) {
+        //memcpy(aux_arr + i * sizeof(li), nums + (s) * sizeof(li), sizeof(li) * (end - s) );
+        memcpy(&aux_arr[i], &nums[s], sizeof(li) * (end - s) );
+    }
+
+    memcpy(nums, aux_arr, sizeof(li) * (end - start));
+
+}
+
+int _mergesort(li nums[], int start, int end) {
     if (start - end == 1) return 0;
 
     int pivot = start + (start + end)/2;
-    mergesort (nums, start, pivot);
-    mergesort(nums, pivot + 1, end);
+    _mergesort (nums, start, pivot);
+    _mergesort(nums, pivot + 1, end);
+
 
 
 	return 0;
 }
 
+#include <stdlib.h>
 
 
 int main(){
+
+    li numes[] = {24,32,76,48};
+    li aux[] = {0,0,0,0,0,0};
+    memcpy(&aux[2], &numes[1], sizeof(li));
+    printarray(aux, sizeof(li), 6, "%ld - ");
 
     //li num_n = 0;
     li num_n = 0;
@@ -31,6 +70,8 @@ int main(){
     	scanf("%ld", &nums[i]);
     }
 
+    printarray(nums, sizeof(li), num_n, "%ld\n");
+    merge(nums, alloca(num_n * (sizeof(li))), 0, num_n -1, num_n/2 );
     printarray(nums, sizeof(li), num_n, "%ld\n");
 
 }
