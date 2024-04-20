@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include "../library.c"
+#include "library.c"
 #include <string.h>
 
 typedef long int li;
-
-int merge(li nums[], li aux_arr[], int start, int end, int pivot){
+li *aux_arr;
+int merge(li nums[], int start, int end, int pivot){
 
     li holder;
 
@@ -68,10 +68,11 @@ int _mergesort(li nums[], int start, int end) {
 
 int main(){
 
-    li numes[] = {24,32,76,48};
+        aux_arr = alloca(70 * (sizeof(li)));
+    li numes[] = {1,0,2};
     li aux[] = {0,0,0,0,0,0};
-    memcpy(&aux[2], &numes[1], sizeof(li));
-    printarray(aux, sizeof(li), 6, "%ld - ");
+    merge(numes, 0, 2, 1);
+    printarray(numes, sizeof(li), 3, "%ld");
 
     //li num_n = 0;
     li num_n = 0;
@@ -86,8 +87,10 @@ int main(){
     	scanf("%ld", &nums[i]);
     }
 
+    //aux_arr = alloca(num_n * (sizeof(li)));
     printarray(nums, sizeof(li), num_n, "%ld\n");
-    merge(nums, alloca(num_n * (sizeof(li))), 0, num_n -1, num_n/2 );
+    //merge(nums, , 0, num_n -1, num_n/2 );
+    _mergesort(nums, 0, num_n - 1);
     printarray(nums, sizeof(li), num_n, "%ld\n");
 
 }
