@@ -9,7 +9,7 @@ int merge(li nums[], int start, int end, int pivot){
     li holder;
 
     //first half and second half
-
+    li *debugarr = aux_arr;
     int i = 0;
     int f = start;
     int s = pivot;
@@ -34,29 +34,33 @@ int merge(li nums[], int start, int end, int pivot){
     puts("NUMS before");
     printarray(&nums[start], sizeof(li), end-start + 1, "%ld-");
 
-    puts("\naux before");
-    printarray(aux_arr, sizeof(li), i, "%ld-");
+    puts("\taux before");
+    printarray(aux_arr, sizeof(li), end-start + 1, "%ld-");
     if (f == pivot) {
         // here we must add 1 because array[end] is also part of the array, 
         // so we must copy it too
         memcpy(&aux_arr[i], &nums[s], sizeof(li) * (end - s + 1) );
     }
     else {
+        // pivot is not part of the first half
         memcpy(&aux_arr[i], &nums[f], sizeof(f) * (pivot - f) );
     }
-    puts("\nafter:  ");
-    printarray(aux_arr, sizeof(li), i + 1 + end - s, "%ld-");
+    puts("\tafter:  ");
+    printarray(aux_arr, sizeof(li), end - start + 1, "%ld-");
 
-    memcpy(&nums[start], aux_arr, sizeof(li) * (end - start));
+    memcpy(&nums[start], aux_arr, sizeof(li) * (end - start + 1));
 
 }
 
 int _mergesort(li nums[], int start, int end) {
-    if (start - end == 1) return 0;
+    int pivot = (start + end + 1) / 2;
+    if (start == end) {return 0;}
 
-    int pivot = start + (start + end)/2;
-    _mergesort (nums, start, pivot);
-    _mergesort(nums, pivot + 1, end);
+    // nao queremos incluir o pivot, entao removemos ele
+    _mergesort(nums, start, pivot - 1);
+    //deve incluir o end e o pivot
+    _mergesort(nums, pivot, end);
+    merge(nums, start, end, pivot);
 
 
 
@@ -69,6 +73,7 @@ int _mergesort(li nums[], int start, int end) {
 int main(){
 
         aux_arr = alloca(70 * (sizeof(li)));
+        for (int i = 0; i < 70; i++) aux_arr[i] = 37;
     li numes[] = {1,0,2};
     li aux[] = {0,0,0,0,0,0};
     merge(numes, 0, 2, 1);
@@ -88,7 +93,7 @@ int main(){
     }
 
     //aux_arr = alloca(num_n * (sizeof(li)));
-    printarray(nums, sizeof(li), num_n, "%ld\n");
+    printarray(nums, sizeof(li), num_n, "%ld ");
     //merge(nums, , 0, num_n -1, num_n/2 );
     _mergesort(nums, 0, num_n - 1);
     printarray(nums, sizeof(li), num_n, "%ld\n");
