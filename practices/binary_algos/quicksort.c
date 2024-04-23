@@ -9,7 +9,8 @@ int partitioning(li nums[], int start, int end) {
     int j = end;
     //hoares partitioning
     li holder;
-    //executar o passo ANTES de checar se i<j, para que façamos um movimento desnecessário para desfazermos-no depois
+    //executar o passo ANTES de checar se i<j, para que façamos
+    // um movimento desnecessário para desfazermos-no depois
     do {
 
         //procurar até achar um maior igual
@@ -57,8 +58,11 @@ int quicksort(li nums[], int start, int end) {
 
 int main() {
     puts("EAE");
-    li numes[] = {1,2,4,0,5,25,-2,-1,32};
-    quicksort(numes,0, sizeof(numes)/sizeof(li) -1);
+    //li numes[] = {1,2,4,0,5,25,-2,-1,32};
+    li numes[] = {5,25,4,2,32};
+    quicksort(numes, 0, sizeof(numes)/sizeof(li) -1);
+    
+    //quicksort(numes,0, sizeof(numes)/sizeof(li) -1);
 
     int num_n = sizeof(numes) / sizeof(li);
     for(int i = 0; i < num_n; i++) {
