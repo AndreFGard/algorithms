@@ -2,17 +2,18 @@
 #include <stdio.h>
 
 typedef long int li;
-int quicksort(li nums[], int start, int end) {
 
+int partitioning(li nums[], int start, int end) {
     int p = nums[start];
     int i = start + 1;
     int j = end;
-
+    //hoares partitioning
     li holder;
-    while ( i<j) {
+    //executar o passo ANTES de checar se i<j, para que façamos um movimento desnecessário para desfazermos-no depois
+    do {
 
         //procurar até achar um maior igual
-        while (i <= end && nums[i] < p) {
+        while (i < end && nums[i] < p) {
             i++;
         }
 
@@ -26,22 +27,32 @@ int quicksort(li nums[], int start, int end) {
         holder = nums[i]; nums[i] = nums[j];
         nums[j] = holder;
         i++; j--;
-        }
-        //desfazer ultimo swap que foi feito inadequadamente
-        holder = 37;
-        i--; j++;
-        holder = nums[i];
-        nums[i] = nums[j];
-        nums[j] = holder;
-        
+    } while ( i<j);
+    
+    //desfazer ultimo swap que foi feito inadequadamente
+    i--; j++;
+    holder = nums[i];
+    nums[i] = nums[j];
+    nums[j] = holder;
+    
 
-        //ele se cruzaram, nao ha mais nada pra fazer aqui
-        //swapping
-        nums[start] = nums[j];
-        nums[j] = p;
+    // como i e j se cruzaram, trocar nums[j] com o pivot
+    nums[start] = nums[j];
+    nums[j] = p;
+    return j;
+}
 
-    // IMPLEMENTAR RECURSAO
 
+int quicksort(li nums[], int start, int end) {
+
+    if (start >= end) return 0;
+
+    int j = partitioning(nums, start, end);
+
+    quicksort(nums, j + 1, end);
+    quicksort(nums, start, j -1); 
+    
+    
 }
 
 int main() {
