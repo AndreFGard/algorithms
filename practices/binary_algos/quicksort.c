@@ -27,11 +27,9 @@ int partitioning(li nums[], int start, int end) {
         // trocar os elementos
         holder = nums[i]; nums[i] = nums[j];
         nums[j] = holder;
-        i++; j--;
     } while ( i<j);
     
     //desfazer ultimo swap que foi feito inadequadamente
-    i--; j++;
     holder = nums[i];
     nums[i] = nums[j];
     nums[j] = holder;
@@ -59,7 +57,7 @@ int quicksort(li nums[], int start, int end) {
 int main() {
     puts("EAE");
     //li numes[] = {1,2,4,0,5,25,-2,-1,32};
-    li numes[] = {5,25,4,2,32};
+    li numes[] = {1,2,4,0,5,25,5,-2,-1,32};
     quicksort(numes, 0, sizeof(numes)/sizeof(li) -1);
     
     //quicksort(numes,0, sizeof(numes)/sizeof(li) -1);
