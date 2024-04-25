@@ -55,7 +55,6 @@ int merge(li nums[], int start, int end, int pivot){
 int _mergesort(li nums[], int start, int end) {
     int pivot = (start + end + 1) / 2;
     if (start == end) {return 0;}
-
     // nao queremos incluir o pivot, entao removemos ele
     _mergesort(nums, start, pivot - 1);
     //deve incluir o end e o pivot
@@ -65,11 +64,9 @@ int _mergesort(li nums[], int start, int end) {
 	return 0;
 }
 
+
 #include <stdlib.h>
-
-
 int main(){
-
     aux_arr = alloca(70 * (sizeof(li)));
     for (int i = 0; i < 70; i++) aux_arr[i] = 37;
     li numes[] = {1,0,2};
@@ -85,7 +82,6 @@ int main(){
 
     //stop me if you can
     li nums[num_n];
-
     for (int i =0;i<num_n;i++) {
     	scanf("%ld", &nums[i]);
     }
@@ -95,6 +91,5 @@ int main(){
     //merge(nums, , 0, num_n -1, num_n/2 );
     _mergesort(nums, 0, num_n - 1);
     printarray(nums, sizeof(li), num_n, "%ld\n");
-
 }
 
