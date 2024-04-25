@@ -148,11 +148,13 @@ int main(){
     //TODO: garantir que ja nao está sorteado
     //essa porcaria nao funciona se ja estiver ordenado, mergesort SOLA
     _mergesort(bars, 0, n_bars -1);
-    for (int i = 1200; i < 1208; i++) printf("%d ", bars[i]);
+    
+    //PRINTAR ARRAY DE BARS
+    //for (int i = n_bars -1; i > n_bars -15; i++) printf("%d ", bars[i]);
 
     long long unsigned int sum = 0;
     for (int i = 0; i < n_bars; i++) sum += bars[i];
-    printf("sum is: %ld\n", sum);
+    //DEBUGprintf("sum is: %ld\n", sum);
 
 
     int xx, discount;
@@ -160,10 +162,10 @@ int main(){
         // n de barras que eu vou comprar a priori
         xx = coups[i];
         discount = bars[n_bars -xx];
-        printf("money is: %ld\n", sum - discount);
+        printf("%llu\n", sum - discount);
     }
 
 
-    puts("acabou-se");
+   //DEBUGputs("acabou-se");
 
 }
