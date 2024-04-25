@@ -31,11 +31,11 @@ int merge(li nums[], int start, int end, int pivot){
         
     }
 
-    puts("NUMS before");
-    printarray(&nums[start], sizeof(li), end-start + 1, "%ld-");
+    //puts("NUMS before");
+    //printarray(&nums[start], sizeof(li), end-start + 1, "%ld-");
 
-    puts("\taux before");
-    printarray(aux_arr, sizeof(li), end-start + 1, "%ld-");
+    //puts("\taux before");
+    //printarray(aux_arr, sizeof(li), end-start + 1, "%ld-");
     if (f == pivot) {
         // here we must add 1 because array[end] is also part of the array, 
         // so we must copy it too
@@ -45,8 +45,8 @@ int merge(li nums[], int start, int end, int pivot){
         // pivot is not part of the first half
         memcpy(&aux_arr[i], &nums[f], sizeof(f) * (pivot - f) );
     }
-    puts("\tafter:  ");
-    printarray(aux_arr, sizeof(li), end - start + 1, "%ld-");
+    //puts("\tafter:  ");
+    //printarray(aux_arr, sizeof(li), end - start + 1, "%ld-");
 
     memcpy(&nums[start], aux_arr, sizeof(li) * (end - start + 1));
 
@@ -62,8 +62,6 @@ int _mergesort(li nums[], int start, int end) {
     _mergesort(nums, pivot, end);
     merge(nums, start, end, pivot);
 
-
-
 	return 0;
 }
 
@@ -72,8 +70,8 @@ int _mergesort(li nums[], int start, int end) {
 
 int main(){
 
-        aux_arr = alloca(70 * (sizeof(li)));
-        for (int i = 0; i < 70; i++) aux_arr[i] = 37;
+    aux_arr = alloca(70 * (sizeof(li)));
+    for (int i = 0; i < 70; i++) aux_arr[i] = 37;
     li numes[] = {1,0,2};
     li aux[] = {0,0,0,0,0,0};
     merge(numes, 0, 2, 1);
