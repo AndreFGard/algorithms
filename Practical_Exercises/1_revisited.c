@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-typedef int li;
 
 #define MAX_INSCRITOS 5001
+#define MAX_NOME 31
+
 typedef struct person {
     int nota;
-    char nome[31];
+    char nome[MAX_NOME];
     int idade;
 } person;
 
@@ -13,10 +14,6 @@ struct person pessoas[MAX_INSCRITOS];
 struct person pessoas_aux[MAX_INSCRITOS];
 person *aux_arr = pessoas_aux;
 
-
-
-
-li *moverjunto;
 int merge(person nums[], int start, int end, int pivot) {
     int i = start;
     int f = start; int s = pivot + 1;
@@ -56,6 +53,7 @@ int merge(person nums[], int start, int end, int pivot) {
     memcpy(&nums[start], &aux_arr[start], sizeof(person) * (end -start + 1) );
 }
 
+
 int _mergesort(person nums[], int start, int end) {
     //puts("oi");
     if (start >= end) return 0;
@@ -67,13 +65,6 @@ int _mergesort(person nums[], int start, int end) {
 }
 
 
-#define MAX_NOME 31
-char ngm[] = "x";
-
-
-
-
-#include <stdlib.h> // malloc
 int main() {
 
     int n_cargos;
@@ -90,9 +81,6 @@ int main() {
             scanf("%d", &pessoas[inscritos -1 -j].nota);
             scanf("%d", &pessoas[inscritos -1 -j].idade);
         }
-
-        //terminamos com os inputs, agora vamos ordenar
-        //(ja estamos ajustando os nomes e idades)
         _mergesort(pessoas, 0, inscritos -1);
 
         printf("cargo %d:\n", i+1);
@@ -101,6 +89,5 @@ int main() {
                 printf("%s\n", pessoas[inscritos -1 -k].nome);
             else printf("x\n");
         }
-
     }
 }
