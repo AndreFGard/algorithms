@@ -25,13 +25,13 @@ int merge(person nums[], int start, int end, int pivot) {
             f++;
         }
         else if (nums[f].nota == nums[s].nota) {
-            if (nums[f].idade <= nums[s].idade) {
-                aux_arr[i] = nums[f];
-                f++;
-            }
-            else {
+            if (nums[f].idade > nums[s].idade) {
                 aux_arr[i] = nums[s];
                 s++;
+            }
+            else {
+                aux_arr[i] = nums[f];
+                f++;
             }
         }
         else {
