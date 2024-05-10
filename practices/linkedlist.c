@@ -8,13 +8,14 @@ typedef struct  node{
     struct node *next;
 } node;
 
-#define minfreelistsize 3
+#define minfreelistsize 20
 
 int freelist_size;
 node *freelist; //lista com nodes livres
 node *temp;
-int watchme = 50;
+int watchme = 0;
 void increase_freelist() {
+    watchme += 1;
     freelist->next = malloc(sizeof(node)*minfreelistsize);
 
     //delimitando o final da free (nodes) list
@@ -65,7 +66,7 @@ int main()  {
     addNode(head, &IMOVER);
 
     node *curr = head;
-    for(int i = 0;i<50; i++){
+    for(int i = 0;i<3*10E5; i++){
         stuff += 1;
         addNode(curr, malloc(4));
         *curr->next->data = i;
@@ -76,6 +77,6 @@ int main()  {
     while (curr->next->next != NULL) {
         curr = curr->next;
     }
-    printf("last data held is %d\n", *(curr->next->data));
+    printf("last data held is %d and freelist was increased %d times\n", *(curr->data), watchme);
     puts("hello");
 }
