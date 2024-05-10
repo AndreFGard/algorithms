@@ -20,7 +20,7 @@ void increase_freelist() {
     //delimitando o final da free (nodes) list
     freelist->next[minfreelistsize -1].next = NULL; // isso nao causa segfault
     freelist->next[minfreelistsize -1].data = &watchme; // isso nao causa segfault
-    (freelist->next + (minfreelistsize -1))->next = NULL; //isso causa segfault
+    //(freelist->next + (minfreelistsize -1))->next = NULL; //isso causa segfault
 
     freelist->next->next = freelist->next + sizeof(node); //there is enough space.
 }
@@ -46,24 +46,36 @@ node* get_free_node() {
 
 #define movecurrent() head->
 
+int IMOVER = 6969;
 node* addNode(node *curr, datatype *data) {
     //inserts right next to the current
     temp = get_free_node();
     temp->data = data;
     temp->next = curr->next;
     curr->next = temp;
+    return temp;
 }
 
 int main()  {
     freelist = alloca(sizeof(node));
     increase_freelist();
-    int stuff = 99999;
-    node *head = get_free_node();
+    int stuff = 10000;
+    node *head = get_free_node(); 
+    head->next = NULL; 
+    addNode(head, &IMOVER);
+
     node *curr = head;
     for(int i = 0;i<50; i++){
-        curr->next = get_free_node();
-        //curr->next->data = &stuff;
+        stuff += 1;
+        addNode(curr, malloc(4));
+        *curr->next->data = i;
         curr = curr->next;
     }
+
+    curr = head;
+    while (curr->next->next != NULL) {
+        curr = curr->next;
+    }
+    printf("last data held is %d\n", *(curr->next->data));
     puts("hello");
 }
