@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include "library.c"
 #include <string.h>
 
-typedef long int li;
+typedef int li;
 li *aux_arr;
 int merge(li nums[], int start, int end, int pivot){
 
@@ -67,29 +66,15 @@ int _mergesort(li nums[], int start, int end) {
 
 #include <stdlib.h>
 int main(){
-    aux_arr = alloca(70 * (sizeof(li)));
-    for (int i = 0; i < 70; i++) aux_arr[i] = 37;
-    li numes[] = {1,0,2};
-    li aux[] = {0,0,0,0,0,0};
-    merge(numes, 0, 2, 1);
-    printarray(numes, sizeof(li), 3, "%ld");
+    int stuff[] = {9, 5, 25, 28, 27, 2, 15, 18, 26, 14, 13, 6, 16, 10, 12, 29, 23, 8, 19, 1, 17, 20, 22, 11, 7, 21, 24, 3, 4, 14};
+    int size = sizeof(stuff)/sizeof(int);
+    aux_arr = alloca(size * sizeof(int));
+    _mergesort(stuff,0, size -1);
 
-    //li num_n = 0;
-    li num_n = 0;
-    printf("input: ");
-    scanf("%ld", &num_n);
-    printf("num of nums is %ld\n", num_n);
-
-    //stop me if you can
-    li nums[num_n];
-    for (int i =0;i<num_n;i++) {
-    	scanf("%ld", &nums[i]);
+    
+    for (int i = 0; i<size; i++) {
+        printf("%d, ", stuff[i]);
     }
 
-    //aux_arr = alloca(num_n * (sizeof(li)));
-    printarray(nums, sizeof(li), num_n, "%ld ");
-    //merge(nums, , 0, num_n -1, num_n/2 );
-    _mergesort(nums, 0, num_n - 1);
-    printarray(nums, sizeof(li), num_n, "%ld\n");
 }
 
