@@ -57,6 +57,9 @@ int insert_l(hashtable *t, int value) {
     else {
         //the table is full, resize it
         puts("no thanks, im full");
+        return k;
+
+        //forgot to do rehashing, not worth it
         s = (slot_t*) malloc(sizeof(slot_t)*t->max_size*2);
 
         t->max_size *= 2;
@@ -68,10 +71,45 @@ int insert_l(hashtable *t, int value) {
 }
 
 
+int find_l(hashtable *t, int value) {
+    int tablesize = t->max_size;
+    int k = hash(value, tablesize);
+    int i = k;
+    
+    int found_at = -1;
+    do {
+        if (t->table[i].stat != empty) {
+            //one must consider the previously busy case
+            if (t->table[i].value == value && t->table[i].stat !=previously_busy) {
+                found_at = i; 
+                break;
+            }
+            i++;
+        }
+        else {
+            break;
+        }
+    }
+    while (i != k);
+    return found_at;
+}
+
+int remove_l(hashtable *t, int value){
+    int tablesize = t->max_size;
+    int idx = find_l(t, value);
+    if (idx != -1){
+        t->curr_size -=1;
+        t->table[idx].stat = previously_busy;
+        return idx;
+    }
+    return -1;
+
+}
+
 void populate_table(hashtable *t){
     t->curr_size = 0;
     t->max_size = tablesize_start;
-    t->table = malloc(sizeof(slot_t)*tablesize_start);
+    t->table = (slot_t *)malloc(sizeof(slot_t)*tablesize_start);
     populate_table_arr(t, t->table);
 }
 
@@ -82,6 +120,14 @@ int main() {
         insert_l(&table, i);
     }
 
+    remove_l(&table, 9);
+    find_l(&table, 12);
 
-    puts("eae!");
+    for (int i = 0; i < 13; i++){
+        if (find_l(&table, i) == -1){
+            printf("couldnt find value %d\n", i);
+        }
+    }  
+
+    puts("eba, salvei e guardei tudo!");
 }
