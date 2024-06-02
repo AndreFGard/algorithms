@@ -139,10 +139,17 @@ int test_linear() {
         }
     } 
     puts("eba, salvei e guardei tudo!");
+    return 1;
 }
 
 
 /////random probing hashtable
+
+
+int deal_colision_hash(int k){ return (k + k*((tablesize-2-k)%(tablesize-2)))%tablesize;}
+
+//#define deal_colision_hash (k + randints[i])%tablesize
+
 
 int randints[] = {0, 2, 6, 7, 3, 1, 4, 5};
 int insert_r(hashtable *t, int value) {
@@ -156,8 +163,8 @@ int insert_r(hashtable *t, int value) {
     //this for does reach every position, please note, because the randints
     //are all between 0 and tablesize and have no repetition
     for (int i = 0; i<tablesize; i++){
-        if (t->table[   (k + randints[i])%tablesize  ].stat != full){
-            k = (k + randints[i])%tablesize;
+        if (t->table[   deal_colision_hash(k)  ].stat != full){
+            k = deal_colision_hash(k);
             //one could check if we arent repeating an item right here
             t->table[k].value = value;
             t->table[k].stat = full;
@@ -165,7 +172,7 @@ int insert_r(hashtable *t, int value) {
             return k;
         }
     }
-
+    return 1;
 }
 
 int find_r(hashtable *t, int value){
@@ -175,11 +182,11 @@ int find_r(hashtable *t, int value){
     //this for does reach every position, please note, because the randints
     //are all between 0 and tablesize and have no repetition
     for (int i = 0; i<tablesize; i++){
-        if (t->table[   (k + randints[i])%tablesize  ].stat != empty){
+        if (t->table[   deal_colision_hash(k)  ].stat != empty){
             
             //one could check if we arent repeating an item right here
-            if (t->table[   (k + randints[i])%tablesize  ].value == value && t->table[   (k + randints[i])%tablesize  ].stat != previously_busy){
-                k = (k + randints[i])%tablesize;
+            if (t->table[   deal_colision_hash(k)  ].value == value && t->table[   deal_colision_hash(k)  ].stat != previously_busy){
+                k = deal_colision_hash(k);
                 return k;
             }
         }
