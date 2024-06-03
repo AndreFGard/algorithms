@@ -26,13 +26,13 @@ int hash (char key[]){
         }
         sum += key[i]*(i+1);
     }
-    return (sum*19)%101;
+    return (sum*19)%tablesize;
 }
 
 int find(hashtable *t, char key[]) {
     int k = hash(key);
     int newpos = -1;
-    
+    int _;
     for (int i = 0; i<20; i++){
         newpos = (k + i*i + 23*i)%tablesize;
 
@@ -47,7 +47,7 @@ int find(hashtable *t, char key[]) {
             return -1;
         }
         else if (t->arr[newpos].stat == previously_full){
-            //ignorar
+            _ = 0; // nao fazer nada
         }
     }
 
@@ -64,6 +64,10 @@ int insert(hashtable *t, char key[]) {
         for (int i =0; i<20; i++){
             newpos = (k + i*i + 23*i)%tablesize;
 
+            //checar mesmo assim se ja nao foi inserido
+            if (strcmp(t->arr[newpos].s, key) == 0 && t->arr[newpos].stat == full) {
+                return -1;
+            }
             if (t->arr[newpos].stat != full){
                 //já sabemos que não está inserido na tabela,podemos insereir
                 t->arr[newpos].s = key;
@@ -112,7 +116,7 @@ int main() {
         t = (hashtable *) malloc(sizeof(hashtable));
         populate_table(t);
         for(int i = 0; i<nops; i++){
-            newstr = (char *) malloc(16);
+            newstr = (char *) malloc(16+4);
             scanf("%s", newstr);
             
             if (strncmp("ADD:", newstr, 4) == 0){
@@ -124,7 +128,7 @@ int main() {
                 newstr = newstr+4;
                 del_k(t, newstr);
             }
-            else if(strcmp("st", newstr) == 0) break;
+            //else if(strcmp("st", newstr) == 0) break;
 
         }
         printf("%d\n", t->size);
