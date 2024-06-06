@@ -1,166 +1,140 @@
-#define tablesize 101
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
+#define occupied -5
+#define prev_occupied -4
+#define unused -3
+#define tablesize 101
 
-#define inserted_already -102
-#define empty 2
-#define previously_full 1
-#define full 0
-
-/*
-hello, if you are stuck with the hashit problem, please check out my comment on spoj.
-I have very strong evidences that this problem has improper inputs in it's testcases. if I were
-to remove the else { i--;} line, the code wouldnt be accepted, because thats the line that ignores invalid
-inputs and waits for a valid one instead of skipping them. I had to write a testcase maker in python
-which ended up being buggy and producing invalid inputs (repeating the number of cases between each case)
-in order to notice such issue, and I could only notice it because of this bug. the testcase maker is also
-available here on maketest.py. Heres a copy of my comment on spoj:
-
-Ive lost tons of time in this question. What worked out for me was ignoring inputs that werent proper (that is, that didnt start with "ADD:" nor "DEL:") and continuing to receive inputs until some input that started with either ADD: or DEL: appeared. For example, consider this testcase. the improper lines in between should be ignored, otherwise you might ignore or misplace a valid input. for example, make sure that in this testcase, where there is an improper line, your code WILL add Pz3 rather than ignoring it.
-2
-3
-ADD:dOb
-ADD:mlnB
-ADD:IIaOOP3
-3
-ADD:zSebQV
-ADD:ze
-ADD:Pz3 
-}
-
-*/
+// long int floor (double n){
+//     return ((long int) n);
+// }
 
 typedef struct {
-    short int stat;
     char *s;
-} memb;
+    int stat;
+} member;
 
-typedef struct {
+typedef struct{
     int size;
-    memb arr[tablesize];
-} hashtable;
+    member *arr;
+} hash_ktable;
 
-
-int hash(char key[]){
-    long int sum = 0;
-    for (int i =0; i<17;i++){
-        if (key[i] == '\0') break;
-        sum +=  key[i]*(i+1);
-    }
-    sum *= 19;
-    return sum % tablesize;
+int m;
+int hash_k_old(int n){
+    return n - (m * floor(n/m));
 }
 
-int insert(hashtable *t, char key[]) {
-    int k = hash(key);
-    int possible_slot = -1;
-    memb *slot;
-
-    for (int i = 0; i<20; i++) {
-        k = (k + i*i + 23*i)%tablesize;
-        slot = &t->arr[k];
-
-        if (slot->stat == full) {
-            if (strcmp(slot->s, key) == 0){
-                //INSERTED ALREADY
-                return inserted_already;
-            }
-        }
-        else if (slot->stat == previously_full) {
-            if (possible_slot == -1) possible_slot = k;
-        }
-
-        else if (slot->stat == empty) {
-            //we searched for it, but it wasnt previously inserted
-            if (possible_slot == -1) possible_slot = k;
+int hash_k (char key[]){
+    long int sum = 0;
+    for (int i = 0; i<17; i++)
+    {
+        if (key[i] == '\0') {
             break;
         }
+        sum += key[i]*(i+1);
     }
-
-    //after searching for previous insertions, insert it
-    if (possible_slot != -1) {
-        slot = &t->arr[possible_slot];
-        slot->stat = full;
-        slot->s = key;
-        t->size++;
-    }
-
-    return possible_slot;
+    return (sum*19)%tablesize;
 }
 
-int find(hashtable *t, char key[]) {
-    int k = hash(key);
-    int possible_slot = -1;
-    memb *slot;
-
-
-    for (int i = 0; i<20; i++) {
-        k = (k + i*i + 23*i)%tablesize;
-        slot = &t->arr[k];
-        if (slot->stat == full){
-            if (strcmp(t->arr[k].s, key) == 0){
-                //FOUND
-                return k;
+int find(hash_ktable *t, char key[]){
+    //escanear com força bruta ao inves de usar as posicoes possiveis de verdade
+    //pra garantir que é impossível (espero eu) não achar algo
+    if (t->size > 0){
+        for (int i =0; i<tablesize; i++){
+            if (t->arr[i].stat == occupied){
+                if (strcmp(t->arr[i].s, key) == 0){
+                    return i;
+                }
             }
-        } else if (slot->stat == empty) {
-            //not found :( 
-            return -1;
         }
     }
     return -1;
 }
 
-int delete(hashtable *t, char key[]){
-    int location = find(t, key);
-    if (location != -1){
-        t->arr[location].stat = previously_full;
+int add(hash_ktable *t, char key[]){
+    int found = find(t, key);
+    int k = hash_k(key);
+    int newpos = 0;
+
+    //se nao for achado
+    if (found == -1 && t->size < tablesize){
+        for (int i =0;i<=19; i++){
+            newpos = (k + i*i + 23*i)%tablesize;
+            if (t->arr[newpos].stat != occupied){
+                t->arr[newpos].stat = occupied;
+                t->arr[newpos].s = key;
+                t->size++;
+                return newpos;
+            }
+        }
+    }
+    return -1;
+}
+
+int del_k(hash_ktable *t, char key[]){
+    int found = find(t, key);
+    if (found != -1){
+        //esse marcador não está sendo usado no momento devido ao find atual,
+        //que usa "força bruta" ao invés de parar quando achar o primeiro unused
+        // ou o primeiro igual
+        t->arr[found].stat = prev_occupied;
         t->size--;
     }
-    return location;
+    return found;
 }
 
-char empty_str = '\0';
-int populate(hashtable *t){
+char unused_str[] = {'\0'}; //tentando evitar colisoes com isso, por garantia
+int populate_table(hash_ktable *t) {
     t->size = 0;
-    for (int i =0; i<tablesize; i++){
-        t->arr[i].stat = empty;
-        t->arr[i].s = &empty_str;
+    t->arr = (member *)malloc(sizeof(member)*tablesize);
+    for (int i = 0; i < tablesize; i++){
+        t->arr[i].stat = unused;
+        t->arr[i].s = unused_str;
     }
+    return 0;
 }
+
 int main() {
-    hashtable t;
 
-    populate(&t);
-    int n, ops;
-    char space[16*1001];
-    char *newstr;
+    
+    int n, nops;
+    scanf("%d", &n);
+    hash_ktable *t;
 
-    scanf("%d %d", &n, &ops);
-    int location = 0;
-    for (int c = 0; c<n;c++){
-    for (int i =0; i<ops; i++){
-        newstr = malloc(16*4);
-        scanf("%s", newstr);
-        if (newstr[0] == 'A'){
-            //ADD
-            newstr= newstr + 4;
-            location = insert(&t, newstr);
-        }
-        else if(newstr[0] == 'D'){
-            newstr = newstr +4;
-            delete(&t, newstr);
+    t = (hash_ktable *) malloc(sizeof(hash_ktable));
+    populate_table(t);
+
+    for (int c = 0; c<n; c++){
+        scanf("%d", &nops);
+        t = (hash_ktable *) malloc(sizeof(hash_ktable));
+        //limpar e preparar a tabela
+        populate_table(t);
+        
+        for(int i = 0; i<nops; i++){
+            char *newstr = (char*)malloc(100);
+            scanf("%s", newstr);
+
+            if (strncmp(newstr, "ADD:", 4) == 0){
+                newstr = newstr + 4;
+                add(t, newstr);
+            }
+            else if (strncmp(newstr, "DEL:", 4) == 0){
+                newstr = newstr + 4;
+                del_k(t, newstr);
+            }
 
         }
-        else{
-            i--;
+        printf("%d\n", t->size);
+        for (int i =0; i<tablesize;i++){
+            if (t->arr[i].stat == occupied){
+                printf("%d:%s\n", i, t->arr[i].s);
+
+            }
         }
-    }
-    printf("%d\n",t.size);
-    for (int j = 0; j<tablesize;j++){
-        if(t.arr[j].stat == full) printf("%d:%s\n",j,t.arr[j].s);
-    }
-    populate(&t);
+
+
     }
 
 }
