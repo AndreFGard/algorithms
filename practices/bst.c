@@ -89,9 +89,10 @@ int main(){
 
         }
     }
+    
     for(;;){
-    printf("find: ");
-    scanf("%d", &t);
-    printf("\n%x\n", find(start, t));
-}
+        printf("find: ");
+        scanf("%d", &t);
+        printf("\n%x\n", find(start, t));
+    }
 }
