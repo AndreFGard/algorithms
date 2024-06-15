@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+
+int max(int a, int b){ if (a < b) return b; else return a;}
 /*
 h(tree) = height if exists, 0 if only root element and -1 if no tree at all
 
@@ -19,16 +22,18 @@ typedef struct node {
     struct node *l;
     struct node *r;
     int val;
+    int k;
     int h;
 } node;
 
 #define updateHeight(x) (if (!x) return -1 else return x->h)
 
-int getnode(int v) {
-    node *temp = malloc(sizeof(node));
+node * getnode(int k, int v) {
+    node *temp = (node*) malloc(sizeof(node));
     temp->val = v;
     temp->l = temp->r = NULL;
     temp->h = 0;
+    temp->k = k;
     return temp;
 }
 
@@ -71,14 +76,101 @@ node *leftRotation(node *rt) {
     node *rl = r->l;
 
     //we wanna put the grandpa in the left side of it's right son (the son is bigger)
-    // in order to elevate the grandpa's son over the him.
+    // in order to elevate the grandpa's son over him.
     r->l = rt;
 
     //now we must relocate the left grandson of the right son, since it was overwritten
     // we know that it's bigger than it's grandpa too, so it'll go by his right.
     rt->r = rl;
 
-    rt->h = max(height())
+    rt->h = max(height(rt->l), height(rt->r)) + 1;
+    r->h = max(height(r->l), height(r->r)) + 1;
+
+    return r;
+}
+
+node *insert(node *rt, int k, int val) {
+    if (!rt) return getnode(k,val);
+
+    if (rt->k > k ) {
+        //left
+        //the balancing updates every node when the recursion is returning
+        // note that this is where the assgnment happens
+        rt->l = insert(rt->l, k, val);
+    } else {
+        //right
+        rt->r = insert(rt->r, k, val);
+    }
+
+    rt->h = 1 + max(height(rt->l), height(rt->r));
+    int balance = getBalance(rt);
+    //why doesnt this segfault?
+    if (balance < -1 && k >= rt->r->k) {
+        // if tends to the right and k was added to the right of our right son/subtree
+        return leftRotation(rt);
+    }
+    if (balance > 1 && k < rt->l->k) {
+        //tends to left and k added to the left of our left son/subtree
+        return rightRotation(rt);
+    }
+    if (balance > 1 && k >= rt->l->k) {
+        //on double rotations, we begin by updating the sontree.
+        //if tends to Left but was inserted to the Right of the Left sontree
+        rt->l = leftRotation(rt->l); //first we update the 
+        return rightRotation(rt);
+    }
+    if (balance < -1 && k < rt->r->k) {
+        //when it tends to the right but was inserted to the left of the right sontree
+        rt->r = rightRotation(rt->r);
+        return leftRotation(rt);
+    }
+    return rt;
 }
 
 
+//now about the traversals, the prefix refers to the relative
+//position of the root in the sequence of operations
+int preorder(node *rt){
+    //print root before left and right
+    if (rt){
+    printf("%d ", rt->val);
+
+    preorder(rt->l);
+    preorder(rt->r);}
+}
+
+int postorder(node *rt){
+    //print root after left and right
+if (rt){
+    postorder(rt->l);
+    postorder(rt->r);
+    printf("%d ", rt->val);
+}
+}
+
+int inorder(node *rt){
+if (rt){
+    inorder(rt->l);
+    printf("%d ", rt->val);
+    inorder(rt->r);
+}
+}
+
+int main() {
+    node *l = NULL;
+    char trashbin[78];
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n-3; i++ ){
+        int j;
+        scanf("%s", trashbin);
+        scanf("%d", &j);
+        l = insert(l, j, j);
+
+    }
+    preorder(l);
+    puts("");
+    inorder(l);puts("");
+    postorder(l);puts("");
+
+}
