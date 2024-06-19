@@ -172,7 +172,7 @@ int search(node *rt, int val){
 		else if (val > cur->val){
 			//larger than the current and it`s whole left subtree
 			
-			smallernodes += subtree_size(cur->l);
+			smallernodes += subtree_size(cur->l) + 1;
 			cur = cur->r;
 			
 		}
@@ -211,7 +211,7 @@ void test(){
 	printf("%d\n", findindex(l, 1));
 }
 int main(){
-	test();
+	//test();
 	node *l = NULL;
 	int q ;
 	scanf("%d", &q);
