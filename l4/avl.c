@@ -62,8 +62,8 @@ node * rightRotation(node *rt){
 	rt->h = updateHeight(rt);
 	l->h = updateHeight(l);
 
-	rt->descendants += -getdescendants(l) +getdescendants(lr);
-	l->descendants += -getdescendants(lr) +getdescendants(rt);
+	rt->descendants = subtree_size(rt->l) +subtree_size(rt->r);
+	l->descendants = subtree_size(l->l) +subtree_size(l->r);
 
 	return l;
 }
@@ -79,8 +79,8 @@ node * leftRotation(node *rt){
 	rt->h = updateHeight(rt);
 	r->h = updateHeight(r);
 
-	rt->descendants += -getdescendants(r) +getdescendants(rl);
-	r->descendants += -getdescendants(rl) +getdescendants(rt);
+	rt->descendants = subtree_size(rt->l) + subtree_size(rt->r);
+	r->descendants = subtree_size(r->l) +subtree_size(r->r);
 
 
 	return r;
@@ -144,14 +144,10 @@ node * insertion(node *rt, int val){
 		return leftRotation(rt);
 	} 
 
-	//if no rotation needed
-	int ld = 0; int rd = 0;
-	if (rt->l) {
-		ld = getdescendants(rt->l) + 1;
-		}
-	if (rt->r) {
-		rd = getdescendants(rt->r) + 1;
-		}
+	//if no rotation was needed
+	int rd, ld;
+	ld = subtree_size(rt->l);
+	rd = subtree_size(rt->r);
 
 	rt->descendants = ld + rd;
 	return rt;
@@ -170,14 +166,13 @@ int search(node *rt, int val){
 		}
 		else if (val == cur->val){
 			found = 1;
-
-			smallernodes += cur->descendants - subtree_size(cur->r);
+			smallernodes += subtree_size(cur->l);
 			break;
 		}
 		else if (val > cur->val){
 			//larger than the current and it`s whole left subtree
 			
-			smallernodes += cur->descendants - subtree_size(cur->r);
+			smallernodes += subtree_size(cur->l);
 			cur = cur->r;
 			
 		}
@@ -194,13 +189,15 @@ int findindex(node *rt, int val){
 
 }
 
-int main(){
+void test(){
 	node *l = NULL;
-	int q = 10;
-	//scanf("%d", &q);
+	int j, idx;
+	l = insertion(l, 100);
+	l = insertion(l, 74
+	);
+	printf("%d\n", findindex(l, 100));
+	printf("%d\n", findindex(l, 70));
 
- 	l = insertion(l, 100);
-	l = insertion(l, 74);
 
 
 	l = insertion(l, 152);
@@ -209,6 +206,17 @@ int main(){
 	j = findindex(l, 3);*/
 	l = insertion(l, 21); 
 	l = insertion(l, 33); 
+	printf("%d\n", findindex(l, 100));
+	printf("%d\n", findindex(l, 21));
+	printf("%d\n", findindex(l, 1));
+}
+int main(){
+	test();
+	node *l = NULL;
+	int q ;
+	scanf("%d", &q);
+
+
 
 
 	for (int i = 0; i<q; i++){
