@@ -42,7 +42,15 @@ int getdescendants(node *rt){
 	}
 	return 0;
 }
-
+int subtree_size(node *rt){
+	int size = 0;
+	if (rt){
+		size = 1;
+		size += getdescendants(rt);
+	}
+	else return 0;
+	return size;
+}
 node * rightRotation(node *rt){
 	node *l = rt->l;
 	node *lr = l->r;
@@ -119,17 +127,19 @@ node * insertion(node *rt, int val){
 
 	rt->h = updateHeight(rt);
 	int balance = getBalance(rt);
-	if (balance < -1 && val >= rt->val){
+	//if tends to the right and was inserted to the right
+	// of the righternmosst subtree
+	if (balance < -1 && val >= rt->r->val){
 		return leftRotation(rt);
 	}
-	if (balance > 1 && val < rt->val){
+	if (balance > 1 && val < rt->l->val){
 		return rightRotation(rt);
 	}
-	if (balance > 1 && val >= rt->val){
+	if (balance > 1 && val >= rt->l->val){
 		rt->l = leftRotation(rt->l);
 		return rightRotation(rt);
 	}
-	if (balance < -1 && val < rt->val){
+	if (balance < -1 && val < rt->r->val){
 		rt->r = rightRotation(rt->r);
 		return leftRotation(rt);
 	} 
@@ -160,12 +170,14 @@ int search(node *rt, int val){
 		}
 		else if (val == cur->val){
 			found = 1;
-			smallernodes += cur->descendants - getdescendants(cur->l);
+
+			smallernodes += cur->descendants - subtree_size(cur->r);
 			break;
 		}
 		else if (val > cur->val){
 			//larger than the current and it`s whole left subtree
-			smallernodes += cur->descendants - getdescendants(cur->r) + 1;
+			
+			smallernodes += cur->descendants - subtree_size(cur->r);
 			cur = cur->r;
 			
 		}
@@ -184,18 +196,19 @@ int findindex(node *rt, int val){
 
 int main(){
 	node *l = NULL;
-	int q;
-	scanf("%d", &q);
+	int q = 10;
+	//scanf("%d", &q);
 
-/* 	l = insertion(l, 5);
-	l = insertion(l, 4);
-	int j = findindex(l, 4);
+ 	l = insertion(l, 100);
+	l = insertion(l, 74);
 
-	l = insertion(l, 3);
-	j = findindex(l, 5);
+
+	l = insertion(l, 152);
+	/* j = findindex(l, 5);
 	j = findindex(l, 4);
-	j = findindex(l, 3);
-	l = insertion(l, 5); */
+	j = findindex(l, 3);*/
+	l = insertion(l, 21); 
+	l = insertion(l, 33); 
 
 
 	for (int i = 0; i<q; i++){
