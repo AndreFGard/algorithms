@@ -93,7 +93,7 @@ if (rt){
     postorder(rt->r);
     printf("%d ", rt->val);
 }
-}
+}	
 
 void inorder(node *rt){
 if (rt){
@@ -136,8 +136,12 @@ node * insertion(node *rt, int val){
 
 	//if no rotation needed
 	int ld = 0; int rd = 0;
-	if (getdescendants(rt->l)) ld = getdescendants(rt->l) + 1;
-	if (getdescendants(rt->r) )rd = getdescendants(rt->r) + 1;
+	if (rt->l) {
+		ld = getdescendants(rt->l) + 1;
+		}
+	if (rt->r) {
+		rd = getdescendants(rt->r) + 1;
+		}
 
 	rt->descendants = ld + rd;
 	return rt;
@@ -145,29 +149,36 @@ node * insertion(node *rt, int val){
 
 }
 
-node* search(node *rt, int val){
-
+int search(node *rt, int val){
+	int smallernodes = 0;
+	int found = 0;
 	node *cur = rt;
 	while (cur){
 		if (val < cur->val) {
+			//no one smaller here
 			cur = cur->l;
 		}
-		if (val == cur->val){
+		else if (val == cur->val){
+			found = 1;
+			smallernodes += cur->descendants - getdescendants(cur->l);
 			break;
 		}
-		if (val > cur->val){
+		else if (val > cur->val){
+			//larger than the current and it`s whole left subtree
+			smallernodes += cur->descendants - getdescendants(cur->r) + 1;
 			cur = cur->r;
+			
 		}
 	}
-	return cur;
+	if (found)
+		return smallernodes + 1;
+	else return -1;
 }
 
 int findindex(node *rt, int val){
-	node *temp = search(rt, val);
-	if (temp){
-		return temp->descendants - getdescendants(temp->r);
-	}
-	else return -1;
+	return search(rt, val);
+
+	//those are the nodes in the subtree, which is not enough.
 
 }
 
@@ -175,6 +186,17 @@ int main(){
 	node *l = NULL;
 	int q;
 	scanf("%d", &q);
+
+/* 	l = insertion(l, 5);
+	l = insertion(l, 4);
+	int j = findindex(l, 4);
+
+	l = insertion(l, 3);
+	j = findindex(l, 5);
+	j = findindex(l, 4);
+	j = findindex(l, 3);
+	l = insertion(l, 5); */
+
 
 	for (int i = 0; i<q; i++){
 		int t, val;
