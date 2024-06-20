@@ -8,6 +8,21 @@ typedef struct heap{
     int maxsize;
 }heap;
 
+/*this is a minheap.
+the way it works: the probelm (uva 10954) requires us to always sum the 2 smaller
+numbers among all the numbers at our disposal. every time we sum 2 numbers, their sum
+must enter the list of numbers at our disposal. So, at first glance sorting might look smart,
+but we would need n-1 sorts, since every sum we do also changes the array. Also consider that
+the result of the previous sum might not be the smallest number of the list, so we cant sort it
+once and just add it, (6 5 4 3 2 1 is an example that showcases this, the result must be 51)
+so using a heap and a heapsort like algorithm is smart, since it's trivial to obtain the smallest number at any
+time and it's also easy to update the rheap while mantaining this property (happens at
+logn, rather than at nlogn for a full resort). so we remove the 2 smallest numbers
+of the heap, sum them, add the result to the heap and so on, n -1 times.
+
+
+*/
+
 void fix_parental_dominance(heap *hp, int i){
     int *H = hp->data;
     int n = hp->cursize;
