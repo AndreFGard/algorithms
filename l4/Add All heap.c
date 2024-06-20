@@ -19,14 +19,14 @@ void fix_parental_dominance(heap *hp, int i){
     while (!done && 2*k <= n){
         int j = 2*k;
         
-        //choose the largest of the brothers
+        //choose the smalest of the brothers
         if (j<n){// if brother exists
             if (H[j] > H[j+1]){
                 j++;
                 }
         }
 
-        //if parent larger than largest child
+        //if parent smaler than smalest child
         if (v <= H[j]){
             done = 1;
         }
@@ -124,12 +124,12 @@ long long getCost(heap *hp, int n){
         a = root_deletion(hp);
         b = root_deletion(hp);
 
-            cost += a + b;
-            hp->data[hp->cursize+1] = a + b;
-            hp->cursize++;
-            
+        cost += a + b;
+        //hp->data[hp->cursize+1] = a + b;
+        //hp->cursize++;
+        topdown_insert(hp, a + b); //using this instead
+        // of bottom-upping always makes the code 10 times faster!
 
-            bottomup(hp, NULL, hp->cursize);
         
     }
 
