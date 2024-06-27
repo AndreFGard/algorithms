@@ -1,40 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //norm of V (|v|)
 #define norm_V 10
 #define CLEAR 0
 #define PARSED 1
 #define VISITED 2
-#define UNVISITED 1
+#define UNVISITED 0
 
 //this graph can be weighted or not, but weights must be natural
 typedef struct {
 	int m[norm_V][norm_V];
 	int nedges;
-	int mark[norm_V][norm_V];
+	int mark[norm_V];
 
 }graph;
 
 void clear_arr(int arr[], int n){
-	memset(arr, 0, n*sizeof(int))
+	memset(arr, 0, n*sizeof(int));
 }
 
-graph create_graph(){
+graph *create_graph(){
 	graph *g = malloc(sizeof(graph));
 
-	for (int row = 0; row < norm_V/ row++){
-		clear_arr(&g->m[i], norm_V);
-		clear_arr(&g->mark[i], norm_V);
+	for (int row = 0; row < norm_V; row++){
+		clear_arr(g->m[row], norm_V);
+		
 	}
-
+	clear_arr(g->mark, norm_V);
 	g->nedges = 0;
 
 }
 
 int first_v(graph *g, int col){
 	for (int i = 0; i<norm_V;i++){
-		if (g->m[i]){
+		if (g->m[col][i]){
 			return i;
 		}
 	}
@@ -43,7 +44,7 @@ int first_v(graph *g, int col){
 
 //next neighbor vertex's column index
 int next(graph *g, int x, int y){
-	for (int c = y; c<norm_V; c++){
+	for (int c = y + 1; c<norm_V; c++){
 		if (g->m[x][c]){
 			return c;
 		}
@@ -51,7 +52,13 @@ int next(graph *g, int x, int y){
 	return -1;
 }
 
-void setMark(graph *g, int v, int c);
+void setMark(graph *g, int v, int c){
+	g->mark[v] = c;
+}
+
+int getMark(graph *g, int v){
+	return g->mark[v];
+}
 
 //if already an edge, 
 void addEdge(graph *g, int x, int y, int weight){
@@ -80,15 +87,26 @@ O(V+E),since we visit every node and should check every edge
 */
 void depth_first_traverse(graph *g, int v){
 	// disconnected graphs not handled here
-	for (int c = 0; c < norm_V; c++){
-		if (g->m[v][c]) {
-			setMark(g,v,c);
-			depth_first_traverse(g,c);
-
+	setMark(g,v,VISITED);
+	
+	int w = first_v(g, v);
+	while (w != -1){
+		if (getMark(g,w) == UNVISITED){
+			setMark(g,v,VISITED);
+			depth_first_traverse(g,w);
 		}
+		w = next(g,v,w);
 	}
 
 }
+
+int test_matrix_graph(){
+	graph *g = create_graph();
+	int (*m)[10] = g->m;
+	m[4][2] = m[2][4] = m[1][2] = m[1][4] = 1;
+	depth_first_traverse(g, 1);
+}
+
 
 
 
