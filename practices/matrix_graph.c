@@ -22,7 +22,7 @@ void clear_arr(int arr[], int n){
 }
 
 graph *create_graph(){
-	graph *g = malloc(sizeof(graph));
+	graph *g = (graph *) malloc(sizeof(graph));
 
 	for (int row = 0; row < norm_V; row++){
 		clear_arr(g->m[row], norm_V);
@@ -30,7 +30,7 @@ graph *create_graph(){
 	}
 	clear_arr(g->mark, norm_V);
 	g->nedges = 0;
-
+	return g;
 }
 
 int first_v(graph *g, int col){
@@ -100,7 +100,7 @@ void depth_first_traverse(graph *g, int v){
 
 }
 
-int test_matrix_graph(){
+void test_matrix_graph(){
 	graph *g = create_graph();
 	int (*m)[10] = g->m;
 	m[4][2] = m[2][4] = m[1][2] = m[1][4] = 1;
