@@ -85,29 +85,36 @@ so while a traversal on a matrix requires O(v + v^2), since for every v
 we could do v comnparisons with 0, on an adjacency list it is
 O(V+E),since we visit every node and should check every edge 
 */
+//THIS IS ALSO A TOPOSORT
 void depth_first_traverse(graph *g, int v){
 	// disconnected graphs not handled here
+	//if (getMark(g, v) != VISITED) printf("%d ", v);
 	setMark(g,v,VISITED);
-	
 	int w = first_v(g, v);
 	while (w != -1){
 		if (getMark(g,w) == UNVISITED){
-			setMark(g,v,VISITED);
+			//setMark(g,v,VISITED);
 			depth_first_traverse(g,w);
+			//printf("%d ", w);
+
 		}
 		w = next(g,v,w);
 	}
+	printf("%d ", v); //toposort print
 
 }
 
 void test_matrix_graph(){
 	graph *g = create_graph();
 	int (*m)[10] = g->m;
-	m[4][2] = m[2][4] = m[1][2] = m[1][4] = 1;
+	//m[4][2] = m[2][4] = m[1][2] = m[1][4] = 1;
+	m[1][2] = m[1][3] = m[2][6] = m[2][4] = m[2][5] = m[3][4] = m[4][5] = m[5][7] = 1;
 	depth_first_traverse(g, 1);
 }
 
-
+int main(){
+	test_matrix_graph();
+}
 
 
 
