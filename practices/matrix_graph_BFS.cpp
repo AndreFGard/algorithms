@@ -40,16 +40,55 @@ void BFS(graph *g, int v){
     }
 }
 
+std::queue<int>& BFS_minimum_edge_path(graph *g, int a, int b){
+    std::queue<int> q;
+    q.push(a);
+
+    static std::queue<int> path;
+    setMark(g,a,VISITED);
+    while (!q.empty()){
+        a = q.front();
+        q.pop();
+        path.push(a);
+
+        if (a == b) {
+            return path;
+        }
+
+        int w = first_v(g,a);
+        while (w!= -1){
+            if (getMark(g,w) == UNVISITED){
+                setMark(g,w,VISITED);
+                q.push(w);
+                if (w == b) {
+                    path.push(w);
+                    return path;
+                }
+            }
+            w = next(g,a,w);
+        }
+
+
+    }
+
+    return path;
+}
+
 int test(){
     graph *g = create_graph();
     int (*m)[10] = g->m;
-    m[4][2] = m[2][4] = m[1][2] = m[1][4] = 1;
-    BFS(g,1);
+    m[1][2] = m[2][3] = m[3][4] = m[4][5] = m[2][5] = 1;
+    std::queue<int>& q =  BFS_minimum_edge_path(g,1,5);
     cout << "over";
+
+    while (!q.empty()) {
+        printf("%d ", q.front());
+        q.pop();
+    }
     return 0;
 
 }
 
 int main(){
-    return test();
+ test();    
 }

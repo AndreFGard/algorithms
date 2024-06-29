@@ -112,9 +112,7 @@ void test_matrix_graph(){
 	depth_first_traverse(g, 1);
 }
 
-int main(){
-	test_matrix_graph();
-}
+
 
 
 
