@@ -40,6 +40,8 @@ void BFS(graph *g, int v){
     }
 }
 
+
+
 std::queue<int>& BFS_minimum_edge_path(graph *g, int a, int b){
     std::queue<int> q;
     q.push(a);
