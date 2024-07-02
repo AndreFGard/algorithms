@@ -4,6 +4,7 @@
 #include <map>
 #include <string.h>
 #include <algorithm>
+#include <string>
 
 #define NODELTA 0
 
@@ -14,15 +15,15 @@
 
 typedef struct rankel{
     int r;
-    char *s;
+    std::string s;
 } rankEl;
 
 typedef struct graph {
     std::vector<int> *mark; 
     std::vector<int> *delta; //distances
     std::vector<std::vector<int>*> m; //graph
-    std::vector<char *> i_to_s; //same as map<int, char*>
-    std::map<char *, int> s_to_i; // the opposite
+    std::vector<std::string> i_to_s; //same as map<int, char*>
+    std::map<std::string, int> s_to_i; // the opposite
     std::vector<int> *curr; //current adjacent vertex idx for each vertex
     int size = -1;
 }graph;
@@ -40,17 +41,18 @@ int first_v(graph *g, int v){
     if (g->m[v]->size() > 0){
         w = g->m[v]->front();
     }
-    return (*g->curr)[v] = w;
+    (*g->curr)[v] = 0;
+    return w;
 }
 
 //returns the next VERTEX
 int next_v(graph *g, int v){
-    int curr = (*g->curr)[v]++;
+    int curr = 1 + (*g->curr)[v]++;
     
     if (g->m[v]->size() > curr){
         return (*g->m[v])[curr];
     }
-    (*g->curr)[v] = 0;
+    (*g->curr)[curr -1] = 0;
     return -1;
 }
 
@@ -67,7 +69,7 @@ graph *makeGraphh(int size){
     return temp;
 }
 
-int addVertex(graph *g, char a[]){
+int addVertex(graph *g, std::string a){
     int an;
     //int ee = g->s_to_i.end();
     auto ait = g->s_to_i.find(a);
@@ -88,7 +90,7 @@ void addEdge(graph *g, int a, int b){
     g->m[b]->push_back(a);
 }
 
-void __addTeam(graph *g, char a[], char b[], char c[]){
+void __addTeam(graph *g, std::string a, std::string b, std::string c){
 
     //wow, this is is such an ugly piece of code...
     
@@ -127,7 +129,7 @@ void __addTeam(graph *g, char a[], char b[], char c[]){
 
 }
 
-void addTeam(graph *g, char a[], char b[], char c[]){
+void addTeam(graph *g, std::string a, std::string b, std::string c){
     int an,bn,cn;
     an = addVertex(g,a);
     bn = addVertex(g,b);
@@ -139,19 +141,24 @@ void addTeam(graph *g, char a[], char b[], char c[]){
 
 }
 
-std::queue<int> BFS(graph *g, int a, int b){
+std::vector<int> BFS(graph *g, int a, int b){
     std::queue<int> q;
     q.push(a);
 
-    std::queue<int> path;
+    std::queue<int> oldpath;
+    std::vector<int> pred (g->m.size());
+    pred[a] = a; //mark the starting point
+
     setMark(g, a, VISITED);
     while (!q.empty()){
+        //pred[q.front()] = a;
+
         a = q.front();
         q.pop();
-        path.push(a);
+        oldpath.push(a);
 
         if (a == b){
-            return path;
+            return pred;
         }
         
         int w = first_v(g,a);
@@ -160,17 +167,18 @@ std::queue<int> BFS(graph *g, int a, int b){
             if (getMark(g, w) == UNVISITED){
                 setMark(g,w,VISITED);
                 q.push(w);
+                pred[w] = a;
                 
                 if (w == b){
-                    path.push(w);
-                    return path;
+                    oldpath.push(w);
+                    return pred;
                 }
             }
             w = next_v(g,a);
         }
 
     }
-    return path;
+    return pred;
 }
 #include <stdio.h>
 int test() {
@@ -196,7 +204,7 @@ int test() {
     // }
         int kkk = g->s_to_i[strdup("Khalid")];
 
-    std::queue<int> qq =BFS(g, g->s_to_i[g->i_to_s[0]], g->s_to_i[g->i_to_s[2]]);
+    std::vector<int> qq =BFS(g, g->s_to_i[g->i_to_s[0]], g->s_to_i[g->i_to_s[2]]);
     std::cout <<"Khalid" << " " << qq.size() -1 << std::endl;
     delete g;
     puts("aaa");
@@ -213,6 +221,18 @@ void zeroOutVec(std::vector<int>& v, int n){
         v[i] = UNVISITED;
     }
     return;
+}
+
+int getNPred(std::vector<int> &pred, int v, int d){
+    int n = 0;
+    int dad = d;
+
+    if (pred[d] == 0) return -1;
+    while((dad = pred[dad]) != v){
+        n++;
+    }
+    n++;
+    return n;
 }
 
 int main(){
@@ -234,20 +254,26 @@ int main(){
             scanf("%s %s %s", name[0], name[1], name[2]);
 
             addTeam(g, name[0], name[1], name[2]);
-            for (int ahmad = 0; i<3;i++){
-                if (strcmp(name[i], "Ahmad") == 0){
-                    ahmadPos = g->s_to_i[name[i]];
+
+            //ahmad finder
+            if (ahmadPos == -1) {
+                for (int ahmad = 0; i<3;i++){
+                    if (strcmp(name[i], "Ahmad") == 0){
+                        ahmadPos = g->s_to_i[name[i]];
+                    }
                 }
             }
         }
 
-        std::map<char*, int> rank;
+        std::map<std::string, int> rank;
         std::vector<rankel> vrank;
         int j = 0;
-        for (std::map<char *, int>::iterator iter = g->s_to_i.begin(); iter != g->s_to_i.end(); iter++){
+        for (std::map<std::string, int>::iterator iter = g->s_to_i.begin(); iter != g->s_to_i.end(); iter++){
             //rank[iter->first] = BFS(g, iter->second, ahmadPos).size();
-            rankel el = {(int) BFS(g, iter->second, ahmadPos).size() -1, iter->first};
+            std::vector<int> predecessors = BFS(g, iter->second, ahmadPos);
+            rankel el = {getNPred(predecessors,iter->second, ahmadPos), iter->first};
             zeroOutVec(*g->mark, g->mark->size());
+            zeroOutVec(*g->curr, g->curr->size());
             vrank.push_back(el);
         }
 
