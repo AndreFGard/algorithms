@@ -3,6 +3,7 @@
 #include <queue>
 #include <map>
 #include <string.h>
+#include <algorithm>
 
 #define NODELTA 0
 
@@ -11,7 +12,10 @@
 
 
 
-
+typedef struct rankel{
+    int r;
+    char *s;
+} rankEl;
 
 typedef struct graph {
     std::vector<int> *mark; 
@@ -65,12 +69,15 @@ graph *makeGraphh(int size){
 
 int addVertex(graph *g, char a[]){
     int an;
-    if (an = g->s_to_i.find(a) == g->s_to_i.end()) {
-    // if a not found
-    an = g->size = g->i_to_s.size();
-    g->i_to_s.push_back(a);
-    g->s_to_i[a] = an;
+    //int ee = g->s_to_i.end();
+    auto ait = g->s_to_i.find(a);
+    if (g->s_to_i.find(a) == g->s_to_i.end()) {
+        // if a not found
+        an = g->size = g->i_to_s.size();
+        g->i_to_s.push_back(a);
+        g->s_to_i[a] = an;
     }
+    else an = ait->second;
 
     return an;
 
@@ -132,11 +139,11 @@ void addTeam(graph *g, char a[], char b[], char c[]){
 
 }
 
-std::queue<int>& BFS(graph *g, int a, int b){
+std::queue<int> BFS(graph *g, int a, int b){
     std::queue<int> q;
     q.push(a);
 
-    static std::queue<int> path;
+    std::queue<int> path;
     setMark(g, a, VISITED);
     while (!q.empty()){
         a = q.front();
@@ -166,7 +173,7 @@ std::queue<int>& BFS(graph *g, int a, int b){
     return path;
 }
 #include <stdio.h>
-int main() {
+int test() {
 
     graph *g = makeGraphh(18);
     std::cout << (*g->mark)[0] << g->m[0]->size() << std::endl;
@@ -189,9 +196,67 @@ int main() {
     // }
         int kkk = g->s_to_i[strdup("Khalid")];
 
-    std::queue<int> & qq =BFS(g,g->s_to_i[a], g->s_to_i[c]);
+    std::queue<int> qq =BFS(g, g->s_to_i[g->i_to_s[0]], g->s_to_i[g->i_to_s[2]]);
     std::cout <<"Khalid" << " " << qq.size() -1 << std::endl;
-
+    delete g;
     puts("aaa");
     return 0;
+}
+
+bool cmpRank(rankel a, rankel b){
+    if (a.r > b.r) return true;
+    else return false;
+}
+
+void zeroOutVec(std::vector<int>& v, int n){
+    for (int i = 0; i<n; i++){
+        v[i] = UNVISITED;
+    }
+    return;
+}
+
+int main(){
+    
+    int c = 1;
+    scanf("%d", &c);
+    for (int i  =0; i<c;i++){
+        int n = 20; //team
+        scanf("%d", &n);
+        graph *g = makeGraphh(n*3);
+
+        int ahmadPos = -1;
+        for (int t = 0; t<n;t++){
+            char *name[] = {(char*) malloc(sizeof(char)*60),
+                            (char*) malloc(sizeof(char)*60),
+                            (char*) malloc(sizeof(char)*60)};
+
+            name[0][0] = name[1][0] = name[2][0] = '\0';
+            scanf("%s %s %s", name[0], name[1], name[2]);
+
+            addTeam(g, name[0], name[1], name[2]);
+            for (int ahmad = 0; i<3;i++){
+                if (strcmp(name[i], "Ahmad") == 0){
+                    ahmadPos = g->s_to_i[name[i]];
+                }
+            }
+        }
+
+        std::map<char*, int> rank;
+        std::vector<rankel> vrank;
+        int j = 0;
+        for (std::map<char *, int>::iterator iter = g->s_to_i.begin(); iter != g->s_to_i.end(); iter++){
+            //rank[iter->first] = BFS(g, iter->second, ahmadPos).size();
+            rankel el = {(int) BFS(g, iter->second, ahmadPos).size() -1, iter->first};
+            zeroOutVec(*g->mark, g->mark->size());
+            vrank.push_back(el);
+        }
+
+        std::make_heap(vrank.begin(), vrank.end(), cmpRank);
+
+        puts("eae");
+    
+
+        
+        
+    }
 }
