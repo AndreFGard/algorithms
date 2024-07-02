@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <string.h>
 
 #define NODELTA 0
 
@@ -62,7 +63,25 @@ graph *makeGraphh(int size){
     return temp;
 }
 
-void addTeam(graph *g, char a[], char b[], char c[]){
+int addVertex(graph *g, char a[]){
+    int an;
+    if (an = g->s_to_i.find(a) == g->s_to_i.end()) {
+    // if a not found
+    an = g->size = g->i_to_s.size();
+    g->i_to_s.push_back(a);
+    g->s_to_i[a] = an;
+    }
+
+    return an;
+
+}
+
+void addEdge(graph *g, int a, int b){
+    g->m[a]->push_back(b);
+    g->m[b]->push_back(a);
+}
+
+void __addTeam(graph *g, char a[], char b[], char c[]){
 
     //wow, this is is such an ugly piece of code...
     
@@ -72,6 +91,7 @@ void addTeam(graph *g, char a[], char b[], char c[]){
         // if a not found
         an = g->size = g->i_to_s.size();
         g->i_to_s.push_back(a);
+        g->s_to_i[a] = an;
 
     }
 
@@ -79,12 +99,14 @@ void addTeam(graph *g, char a[], char b[], char c[]){
         // if b not found
         bn = g->size = g->i_to_s.size();
         g->i_to_s.push_back(b);
+        g->s_to_i[b] = bn;
     }
 
     if (cn = g->s_to_i.find(c) == g->s_to_i.end()) {
         // if c not found
         cn = g->size = g->i_to_s.size();
         g->i_to_s.push_back(c);
+        g->s_to_i[c] = cn;
     }
         
     g->m[an]->push_back(bn) ;
@@ -95,6 +117,18 @@ void addTeam(graph *g, char a[], char b[], char c[]){
 
     g->m[cn]->push_back(an);
     g->m[cn]->push_back(bn);
+
+}
+
+void addTeam(graph *g, char a[], char b[], char c[]){
+    int an,bn,cn;
+    an = addVertex(g,a);
+    bn = addVertex(g,b);
+    cn = addVertex(g,c);
+
+    addEdge(g,an,bn);
+    addEdge(g,an,cn);
+    addEdge(g,bn, cn);
 
 }
 
@@ -112,19 +146,52 @@ std::queue<int>& BFS(graph *g, int a, int b){
         if (a == b){
             return path;
         }
-
+        
         int w = first_v(g,a);
+
+        while (w!= -1){
+            if (getMark(g, w) == UNVISITED){
+                setMark(g,w,VISITED);
+                q.push(w);
+                
+                if (w == b){
+                    path.push(w);
+                    return path;
+                }
+            }
+            w = next_v(g,a);
+        }
 
     }
     return path;
 }
-
+#include <stdio.h>
 int main() {
 
-    graph *g = makeGraphh(10);
-    std::cout << (*g->mark)[0] << g->m[0]->size();
-    addTeam(g, "fernando", "robs", "klebs");
+    graph *g = makeGraphh(18);
+    std::cout << (*g->mark)[0] << g->m[0]->size() << std::endl;
+    char *a, *b,*c;
+    // PROBLEM: map<char* comapres stuff by their addresses, not by their values, somehow
+    addTeam(g, a = strdup("Ahmad"), b = strdup("Mousaab"), c = strdup("Khalid")); //error with khalid
+    // addTeam(g,"Ali", "Mousaab", "Nizar");
+    // addTeam(g, "Ali", "Bassel", "Nizar");
+    // addTeam(g,"Kassem", "Ahmad", "Mousaab");
+    // addTeam(g,"Saeed", "Kassem", "Fadel");
+    // addTeam(g,"Salwa", "Saeed", "Samer");
+    // //addTeam(g,"Mona", "Abdo", "Qussi");
 
+    // //std::queue<int>& q = BFS(g,g->s_to_i["Mona"], g->s_to_i["Ahmad"]);
+    // std::vector<const char*> names = {"Ahmad", "Mousaab", "Khalid", "Ali", "Mousaab", "Nizar", "Ali", "Bassel", "Nizar", "Kassem", "Ahmad", "Mousaab", "Saeed", "Kassem", "Fadel", "Salwa", "Saeed", "Samer", "Mona", "Abdo", "Qussi"};
+    
+    // std::map<char *, int> rank;
+    // for (auto name: names){
+    //     std::cout <<name << " " << BFS(g,g->s_to_i[strdup(name)], g->s_to_i[strdup(names[0])]).size() -1 << std::endl;
+    // }
+        int kkk = g->s_to_i[strdup("Khalid")];
 
+    std::queue<int> & qq =BFS(g,g->s_to_i[a], g->s_to_i[c]);
+    std::cout <<"Khalid" << " " << qq.size() -1 << std::endl;
+
+    puts("aaa");
     return 0;
 }
