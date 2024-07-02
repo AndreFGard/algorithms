@@ -10,7 +10,7 @@
 
 #define VISITED 1
 #define UNVISITED 0
-
+#define UNDEFINED 2* 1e9
 
 
 typedef struct rankel{
@@ -227,7 +227,10 @@ int getNPred(std::vector<int> &pred, int v, int d){
     int n = 0;
     int dad = d;
 
-    if (pred[d] == 0) return -1;
+    if (pred[d] == 0){
+        if (v == d) return 0;
+        else return UNDEFINED;
+    }
     while((dad = pred[dad]) != v){
         n++;
     }
@@ -235,11 +238,30 @@ int getNPred(std::vector<int> &pred, int v, int d){
     return n;
 }
 
+void printMap(std::vector<rankel> &mp){
+    for (auto it:mp){
+        std::string rank = std::to_string(it.r);
+        if (it.r == UNDEFINED) rank = "undefined";
+        std::cout << it.s << " " <<  rank << std::endl;
+    }
+    return;
+}
+
+bool rankElComp(rankEl a, rankEl b){
+    if (a.r < b.r){
+        return true;
+    }
+    else if(a.s < b.s){
+        return true;
+    }
+    else return false;
+}
+
 int main(){
     
-    int c = 1;
+    int c = 2;
     scanf("%d", &c);
-    for (int i  =0; i<c;i++){
+    for (int ncase  =0; ncase<c;ncase++){
         int n = 20; //team
         scanf("%d", &n);
         graph *g = makeGraphh(n*3);
@@ -257,9 +279,9 @@ int main(){
 
             //ahmad finder
             if (ahmadPos == -1) {
-                for (int ahmad = 0; i<3;i++){
-                    if (strcmp(name[i], "Ahmad") == 0){
-                        ahmadPos = g->s_to_i[name[i]];
+                for (int ahmad = 0; ahmad<3;ahmad++){
+                    if (strcmp(name[ahmad], "Ahmad") == 0){
+                        ahmadPos = g->s_to_i[name[ahmad]];
                     }
                 }
             }
@@ -277,12 +299,12 @@ int main(){
             vrank.push_back(el);
         }
 
-        std::make_heap(vrank.begin(), vrank.end(), cmpRank);
-
-        puts("eae");
-    
-
+        //std::make_heap(vrank.begin(), vrank.end(), cmpRank);
+        std::sort(vrank.begin(), vrank.end(), rankElComp);
+        std::cout << vrank.size() << std::endl;
         
+        printMap(vrank);
         
     }
+    
 }
