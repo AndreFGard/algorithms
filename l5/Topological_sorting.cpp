@@ -150,27 +150,6 @@ heap tambem aqui
 
 */
 
-int test(){
-    graph g(6);
-    add_edge(&g, 2,3);
-    add_edge(&g, 2,4);
-    add_edge(&g, 2,5);
-    add_edge(&g, 0,1);
-    
-    
-
-    BFS(&g);
-
-    int vertices, lines;
-    scanf("%d %d", &vertices, &lines);
-
-    for (int l = 0; l<lines; l++){
-        int v, w;
-        scanf("%d %d", &v, &w);
-    }
-    return 0;
-}
-
 int main(){
     
     int n,m;
