@@ -156,8 +156,10 @@ void printPath(vector<int> path ){
         return;
     }
     if (size == 2){
-        printf("%d\n", path[0]);
-        return;
+        if (path[0] == path[1]){
+            printf("%d\n", path[0]);
+            return;
+        }
     }
     printf("%d",path[size-1]);
     for (int i = size -2; i>-1; i--){
