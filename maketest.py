@@ -101,7 +101,33 @@ def test_hashit(test, correct, cases=3, n_operations=3, words_min_size=1, words_
         f.write(inp)
 
 import sys
-test_hashit("./a", "./gab",cases=3, n_operations=3, words_min_size=1, words_max_size=6)
+#test_hashit("./a", "./gab",cases=3, n_operations=3, words_min_size=1, words_max_size=6)
+
+
+
+def test_Contest_Rankings_basic(cases=100, teams = 102, z_teams=6):
+    ADDER_STRING = ""
+    print(cases)
+    for _ in range(cases):
+        print(teams)
+        z_teams = 6
+        names =["Ahmad"]
+        for i in range(1, (teams -z_teams+1)):
+            names.extend( [f"a" +f"{i}".zfill(2) + ADDER_STRING] + [f"b" +f"{i}".zfill(2) +  ADDER_STRING] + [f"b" +f"{i}".zfill(2) +  ADDER_STRING])
         
+        for i in range((teams+1- z_teams), (teams+1)):
+            names.extend( [f"zzzz" +f"{i}".zfill(2) + ADDER_STRING] + [f"zzz" +f"{i}".zfill(2) +  ADDER_STRING] + [f"zz" +f"{i}".zfill(2) +  ADDER_STRING])
+            #names.sort()
+        
+        #print(len(names))
+        
+        ss = ""
+        histo=[]
+        for i in range(0,3*(teams),3):
+            ss = " ".join(names[i:i+3])
+            print(ss)
+            histo.extend(names[i:i+3])
 
+    #print(len(set(histo)))
 
+test_Contest_Rankings_basic()

@@ -23,10 +23,10 @@ typedef struct graph
 
 
 #define added -3
-vector<pair<int,int>> dijkstra(graph &g, int s, int dest){
+vector<int> dijkstra(graph &g, int s, int dest){
     priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> fringe;
     vector<pair<int,int>> delta (g.mark.size(), make_pair(-1, 1000*1000));
-
+    vector<int> newpath;
     
     fringe.push(make_pair(0, s));
     while (!fringe.empty()){
@@ -37,8 +37,9 @@ vector<pair<int,int>> dijkstra(graph &g, int s, int dest){
 
         int p = t.second; int pw = t.first;
         g.mark[p] = added;
+        newpath.push_back(p);
 
-        if (p == dest)return delta;
+        if (p == dest)return newpath;
             
         for (auto &adj: g.adjlist[p]){
             int w = adj.first; int b = adj.second;
@@ -54,7 +55,7 @@ vector<pair<int,int>> dijkstra(graph &g, int s, int dest){
             }
         }
     }
-    vector<pair<int,int>> fail;
+    vector<int> fail;
     return fail;
 }
 void addedge(graph &g, int a, int b, int w){
@@ -79,6 +80,6 @@ int main(){
     for (int i = 0; i< a.adjlist.size(); i++)
         sort(a.adjlist[i].begin(), a.adjlist[i].end());
     
-    vector<pair<int,int>> path = dijkstra(a, 0, 4);
+    vector<int> path = dijkstra(a, 0, 4);
     int gg = 4;
 }
