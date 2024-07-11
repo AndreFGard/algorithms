@@ -8,7 +8,7 @@
 using namespace std;
 
 #define unvisited -1
-#define visited 1
+#define visited -2
 
 
 typedef struct graph
@@ -24,21 +24,23 @@ typedef struct graph
 }graph;
 
 
-#define added -3
 vector<pair<int,int>> dijkstra(graph &g, int s, int dest){
     priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> fringe;
     vector<pair<int,int>> delta (g.mark.size(), make_pair(-1, 1000*1000));
 
     
     fringe.push(make_pair(0, s));
-    while (!fringe.empty()){
+    for (int i = 0, size = g.mark.size(); i<size; i++){
         pair<int, int> t;
         do{
-            t = fringe.top(); fringe.pop();}
-        while (g.mark[t.second] == added);
+            if (fringe.size() == 0) break;
+            t = fringe.top(); fringe.pop();
+            
+            }
+        while (g.mark[t.second] != unvisited);
 
         int p = t.second; int pw = t.first;
-        g.mark[p] = added;
+        g.mark[p] = visited;
 
 
         if (p == dest)return delta;
@@ -46,7 +48,7 @@ vector<pair<int,int>> dijkstra(graph &g, int s, int dest){
         for (auto &adj: g.adjlist[p]){
             int w = adj.first; int b = adj.second;
 
-            if ( g.mark[b] != added){
+            if ( g.mark[b] != visited){
                 //if it has not been added to our new graph yet or must replace someone else
                 if ((delta[b].first == -1)||(delta[b].first > w)){
                     fringe.push(make_pair(w+pw, b));
@@ -99,7 +101,7 @@ void addedge(graph &g, int a, int b, int w){
 }
 
 
-void print_path(vector<pair<int,int>> path, int s, int d){
+void print_path(vector<pair<int,int>> &path, int s, int d){
     int size = path.size() ;
     if ( size  == 0){
         puts("unreachable");
