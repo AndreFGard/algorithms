@@ -93,29 +93,29 @@ vector<pair<int,int>> dijkstra_professor(graph &g, int s, int d){
     return path;
 }
 
-vector<pair<int,int>> primms(graph &g){
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> fringe;
-    vector<pair<int,int>> delta (g.mark.size(), make_pair(inf,inf ));
-
-    fringe.push(make_pair(0,0));
-    delta[0] = make_pair(0,0);
-    for (int i = 0, size = g.mark.size(); i<size; i++){
-        int p,pw;
-        do{
-            pair<int,int> t = fringe.top(); fringe.pop();
-            pw = t.second; p = t.first;
+vector<pair<long long int, int>> primms(graph &g){
+    priority_queue<pair<long long int,int>, vector<pair<long long int,int>>, greater<pair<long long int,int>>> fringe;
+    vector<pair<long long int, int>> delta (g.mark.size(), make_pair(inf, inf));
+    
+    fringe.push(make_pair(0, 0));
+    delta[0] = make_pair(0, 0);
+    for (int i =0, size = g.mark.size(); i<size;i++){
+        int p, pw;
+        do {
+            if (fringe.empty()){
+                break;
+            }
+            pair<long long int, int> t = fringe.top();fringe.pop();
+            p = t.second; pw = t.first;
         } while (g.mark[p] != unvisited);
-        g.mark[p] = visited; //the vertice's parent was already added in delta
 
+        g.mark[p] = visited;
         for (auto t: g.adjlist[p]){
-            if ((g.mark[t.second] != visited) && (delta[t.second].first > (pw + t.first))){
-                delta[t.second].first = pw + t.first;
-                delta[t.second].second = p;
-
-                fringe.push(make_pair(pw + t.first, t.second));
+            if ((g.mark[t.second] != visited) && (delta[t.second].first > t.first)){
+                delta[t.second] = make_pair(t.first, p);
+                fringe.push(make_pair(t.first, t.second));
             }
         }
-
     }
     return delta;
 }
