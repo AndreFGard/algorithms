@@ -108,11 +108,11 @@ vector<pair<int,int>> primms(graph &g){
         g.mark[p] = visited; //the vertice's parent was already added in delta
 
         for (auto t: g.adjlist[p]){
-            if ((g.mark[t.second] != visited) && (delta[t.second].first > (pw + t.first))){
-                delta[t.second].first = pw + t.first;
+            if ((g.mark[t.second] != visited) && (delta[t.second].first > ( t.first))){
+                delta[t.second].first = t.first;
                 delta[t.second].second = p;
 
-                fringe.push(make_pair(pw + t.first, t.second));
+                fringe.push(make_pair( t.first, t.second));
             }
         }
 
