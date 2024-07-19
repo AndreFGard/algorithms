@@ -95,6 +95,35 @@ vector<pair<int,int>> dijkstra_professor(graph &g, int s, int d){
     return path;
 }
 
+vector<pair<int,int>> dijkstra_minev2(graph &g, int s, int d){
+    int size = g.mark.size();
+    vector<pair<int,int>> delta (size, make_pair(inf, inf)); //here, the pairs are <weight, parent>, and the index is th eindex
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> fringe;
+
+    fringe.push(make_pair(0,s));
+    delta[s] = make_pair(0,s);
+    g.mark[s] = visited;
+    for (int i = 0; i<size; i++){
+        int p,pw;
+        do {
+            if (fringe.empty()) break;
+            pair<int,int> t = fringe.top();fringe.pop();
+            p = t.second; pw = t.first;
+            if (p == d) return delta;
+        }
+        while (g.mark[p] != unvisited);
+        g.mark[p] = visited;
+        for (auto adj: g.adjlist[p]){
+            if ((g.mark[adj.second] != visited) && (delta[adj.second].first > (adj.first + pw))){
+                fringe.push(make_pair(pw + adj.first, adj.second));
+                delta[adj.second] = make_pair(adj.first + pw, p);
+            }
+        }
+    }
+    vector<pair<int,int>> fail;
+    return fail;
+}
+
 
 void addedge(graph &g, int a, int b, int w){
     g.adjlist[a].push_back(make_pair(w,b));
@@ -133,7 +162,7 @@ int main(){
             sort(g.adjlist[i].begin(), g.adjlist[i].end());
         
 
-        vector<pair<int,int>> path = dijkstra_professor(g, s, t);
+        vector<pair<int,int>> path = dijkstra_minev2(g, s, t);
         printf("Case #%d: ", c+1); print_path(path, s, t);
     }
 }
