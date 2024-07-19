@@ -52,6 +52,79 @@ vector<pair<lli, int>> primms(graph &g){
     return delta;
 }
 
+
+/*kruskal creates many connected acyclic components, and new edges are only added 
+if they dont connect edges previously connected. One way to check if two nodes are connected is to check
+if the root of their tree is the same, and this should be done before any addition. 
+*/
+int setfind(vector<int>&set, int s){
+    if (set[s] == s) return s;
+    int newparent = setfind(set, set[s]);
+    return set[s] = newparent;
+
+}
+
+void unionset(vector<int>&set, int a, int b){
+    int ra = setfind(set, a); int rb = setfind(set, b);
+    if (ra != rb) set[ra] = rb;
+}
+
+void kruskal(graph &g){
+    int edgecnt = 1;
+    int size= g.mark.size();
+    //vector<pair<pair<lli,int>, int>> hp (size);
+    priority_queue<pair<pair<lli,int>, int>, vector<pair<pair<lli,int>, int>>, greater<pair<pair<lli,int>, int>>> hp;
+    //graph newgraph = graph(size);
+
+    // //pegar todas as edges e ordenar
+    // for (int i = 0;i<size;i++){
+    //     for (auto w: g.adjlist[i]){
+    //         hp[edgecnt++] = make_pair(make_pair(w.first, w.second), i);
+    //     }
+    // }
+    // make_heap(hp.begin(), hp.end(), greater<pair<pair<lli,int>,int>>());
+
+    //pegar todas as edges e ordenar
+    for (int i = 0;i<size;i++){
+        for (auto w: g.adjlist[i]){
+             hp.push(make_pair(make_pair(w.first, w.second), i));
+        }
+    }
+
+
+
+    int numMST = size;
+    vector<int> set (size);
+    for (int j = 0; j<size;j++){ set[j]=j;}
+
+    while (numMST > 1){
+        if (hp.empty()) break;
+        //auto t = hp.back(); pop_heap(hp.begin(),hp.end()); hp.pop_back();
+        auto t = hp.top(); hp.pop();
+        int a = t.first.second; int b = t.second; lli w = t.first.first;
+        if (setfind(set, a) != setfind(set,b)){
+            unionset(set, a,b);
+            //newgraph.adjlist[a].push_back(make_pair(w, b ));
+            numMST -= 1;
+
+            //store maximum weight found
+            g.maxxer = w > g.maxxer ? w : g.maxxer;
+            }
+    }
+    //mark if all vertices are connected
+    int fd = setfind(set, 0);
+    for (int i  = 0; i<size; i++){
+        if (setfind(set, i) != fd){
+            g.mark[0] = unvisited;
+            //puts("went wrong");
+            break;
+        }
+        else g.mark[i] = visited;
+    }
+
+    
+}
+
 int main(){
 
     int cities, edges;
@@ -68,7 +141,7 @@ int main(){
         for (int i = 0; i<cities;i++){
             sort(g.adjlist[i].begin(), g.adjlist[i].end()); }
 
-        primms(g);
+        kruskal(g);
         int success = 1;
         for (int i = 0; i<cities;i++){
             if (g.mark[i] == unvisited){
