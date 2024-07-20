@@ -24,7 +24,7 @@ inline void addedge(graph &g, int a, int b, int w){
     g.adjlist[b].push_back(make_pair(w, a));
 }
 
-vector<pair<lli, int>> primms(graph &g){
+void primms(graph &g){
     priority_queue<pair<long long int,int>, vector<pair<long long int,int>>, greater<pair<long long int,int>>> fringe;
     vector<pair<long long int, int>> delta (g.mark.size(), make_pair(inf, inf));
     
@@ -49,7 +49,7 @@ vector<pair<lli, int>> primms(graph &g){
             }
         }
     }
-    return delta;
+    return;
 }
 
 
